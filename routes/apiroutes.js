@@ -2,12 +2,21 @@ const db = require('../models')
 
 module.exports = (function (app) {
     app.get('/api/workouts', (req,res) => {
-        db.Workout.find()
+        db.Workout.find({}).sort({day: -1}.limit(1))
             .then(activity => {
                 res.json(activity)
             }).catch(err => {
                 res.json(err)
             })
+    })
+
+    app.get('/api/workouts/range', (req,res) => {
+        db.Workout.find({})
+        .then(activity => {
+            res.json(activity)
+        }).catch(err => {
+            res.json(err)
+        })
     })
 
     app.post('/api/workouts', ({body},res) => {
@@ -19,7 +28,7 @@ module.exports = (function (app) {
             })
     })
     
-    app.post('/api/workouts/:id', ({body, params },res) => {
+    app.put('/api/workouts/:id', ({body, params },res) => {
         db.Workout.findByIdAndUpdate({body})
             .then(activity => {
                 res.json(activity)
@@ -27,8 +36,5 @@ module.exports = (function (app) {
                 res.json(err)
             })
     })
-
-
-    app.get('/api/workouts/range')
 
 })
