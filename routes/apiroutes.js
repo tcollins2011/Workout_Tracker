@@ -2,7 +2,7 @@ const db = require('../models')
 
 module.exports = (function (app) {
     app.get('/api/workouts', (req,res) => {
-        db.Workout.find({}).sort({day: -1}.limit(1))
+        db.Workout.find()
             .then(activity => {
                 res.json(activity)
             }).catch(err => {
@@ -11,16 +11,17 @@ module.exports = (function (app) {
     })
 
     app.get('/api/workouts/range', (req,res) => {
-        db.Workout.find({})
+        db.Workout.find({}).limit(5)
         .then(activity => {
+            console.log(activity)
             res.json(activity)
         }).catch(err => {
             res.json(err)
         })
     })
 
-    app.post('/api/workouts', ({body},res) => {
-        db.Workout.create({body})
+    app.post('/api/workouts', (req,res) => {
+        db.Workout.create({})
             .then(activity => {
                 res.json(activity)
             }).catch(err => {
@@ -29,12 +30,22 @@ module.exports = (function (app) {
     })
     
     app.put('/api/workouts/:id', ({body, params },res) => {
-        db.Workout.findByIdAndUpdate({body})
+        db.Workout.findByIdAndUpdate(params.id,{ $push: { exercises: body } })
             .then(activity => {
                 res.json(activity)
             }).catch(err => {
                 res.json(err)
             })
     })
+
+    app.delete("/api/workouts", (req, res) => {
+        Workout.findByIdAndDelete(req.body.id)
+          .then(() => {
+            res.json(true);
+          })
+          .catch(err => {
+            res.json(err);
+          });
+      });
 
 })
